@@ -15,7 +15,7 @@ import org.mytest.test.serializer.Serializer;
  * 保留字段，1字节，v1中是对其填充
  * 消息正文
  *
- * @author lcq
+ * @author gemo
  * @date 2022/4/14 21:28
  **/
 public class Protocol {

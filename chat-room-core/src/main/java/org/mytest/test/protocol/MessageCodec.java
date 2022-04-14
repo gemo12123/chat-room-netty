@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 编解码器（可共享）
  *
- * @author lcq
+ * @author gemo
  * @date 2022/4/14 19:22
  **/
 @ChannelHandler.Sharable

@@ -3,7 +3,7 @@ package org.mytest.test.protocol.version;
 /**
  * 协议版本父抽象类
  *
- * @author lcq
+ * @author gemo
  * @date 2022/4/14 21:07
  **/
 public abstract class Version {

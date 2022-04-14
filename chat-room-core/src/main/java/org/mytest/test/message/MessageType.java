@@ -1,7 +1,7 @@
 package org.mytest.test.message;
 
 /**
- * @author lcq
+ * @author gemo
  * @date 2022/4/14 20:22
  **/
 public enum MessageType {

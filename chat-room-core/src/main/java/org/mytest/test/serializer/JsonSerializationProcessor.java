@@ -3,7 +3,7 @@ package org.mytest.test.serializer;
 import org.mytest.test.message.Message;
 
 /**
- * @author lcq
+ * @author gemo
  * @date 2022/4/14 19:48
  **/
 public class JsonSerializationProcessor implements SerializationProcessor {

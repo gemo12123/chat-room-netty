@@ -1,7 +1,7 @@
 package org.mytest.test.message;
 
 /**
- * @author lcq
+ * @author gemo
  * @date 2022/4/14 19:26
  **/
 public abstract class Message {

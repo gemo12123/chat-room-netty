@@ -1,7 +1,7 @@
 package org.mytest.test.serializer;
 
 /**
- * @author lcq
+ * @author gemo
  * @date 2022/4/14 19:52
  **/
 public enum Serializer {

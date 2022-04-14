@@ -6,7 +6,7 @@ import org.mytest.test.message.Message;
 /**
  * 序列化处理器，用于提供序列化和反序列化功能
  *
- * @author lcq
+ * @author gemo
  * @date 2022/4/14 19:47
  **/
 public interface SerializationProcessor {

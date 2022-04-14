@@ -1,7 +1,7 @@
 package org.mytest.test.protocol.version;
 
 /**
- * @author lcq
+ * @author gemo
  * @date 2022/4/14 21:14
  **/
 public class Version1Impl extends Version{
