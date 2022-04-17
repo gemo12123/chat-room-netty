@@ -1,21 +1,30 @@
 package org.mytest.test.protocol.version;
 
 /**
- * 协议版本父抽象类
+ * 协议版本
  *
  * @author gemo
  * @date 2022/4/14 21:07
  **/
-public abstract class Version {
-    private static final byte[] MAGIC_NUMBER = {'g','e','m','o'};
-    public byte version;
+public enum Version {
+    /**
+     * 版本一
+     * 版本号：1
+     * 扩展字段：5字节对齐填充（0xff）
+     */
+    VERSION_1((byte)1),
+    /**
+     * 版本一
+     * 版本号：2
+     * 扩展字段：4字节序列号 + 1字节对齐填充（0xff）
+     */
+    VERSION_2((byte)2);
 
-    protected Version(byte version){
-        this.version=version;
-    }
+    private byte version;
 
-    public static byte[] getMagicNumber() {
-        return MAGIC_NUMBER;
+
+    Version(byte version) {
+        this.version = version;
     }
 
     public byte getVersion() {

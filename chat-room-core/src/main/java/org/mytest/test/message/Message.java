@@ -1,13 +1,18 @@
 package org.mytest.test.message;
 
 /**
+ * 消息父类
+ *
  * @author gemo
  * @date 2022/4/14 19:26
  **/
-public abstract class Message {
+public class Message {
     protected MessageType messageType;
     protected int sequenceId;
-    protected String content;
+
+    protected Message(MessageType messageType) {
+        this.messageType = messageType;
+    }
 
     public int getInstructionType() {
         return messageType.getType();
