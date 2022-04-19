@@ -23,28 +23,28 @@ public class ChatRoomServer {
     public static final ChannelHandler LOGIN_HANDLER = new LoginHandler();
 
     public static void main(String[] args) {
-        NioEventLoopGroup acceptorExecute = new NioEventLoopGroup();
+        NioEventLoopGroup acceptorExecutor = new NioEventLoopGroup();
         NioEventLoopGroup workerExecutor = new NioEventLoopGroup();
-        new ServerBootstrap()
-                .group(acceptorExecute)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<NioSocketChannel>() {
-                    @Override
-                    protected void initChannel(NioSocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(new ProtocolFrameDecoder());
-                        ch.pipeline().addLast(LOGGING_HANDLER);
-                        ch.pipeline().addLast(MESSAGE_CODEC);
-                        ch.pipeline().addLast(workerExecutor, LOGIN_HANDLER);
+        try {
+            new ServerBootstrap()
+                    .group(acceptorExecutor)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new ChannelInitializer<NioSocketChannel>() {
+                        @Override
+                        protected void initChannel(NioSocketChannel ch) throws Exception {
+                            ch.pipeline().addLast(new ProtocolFrameDecoder());
+                            ch.pipeline().addLast(LOGGING_HANDLER);
+                            ch.pipeline().addLast(MESSAGE_CODEC);
+                            ch.pipeline().addLast(workerExecutor, LOGIN_HANDLER);
 
-                    }
-                })
-                .bind(8080);
-
-        // 注册进程钩子，在JVM进程关闭前释放资源
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            log.info("{}现程执行，关闭了资源！", Thread.currentThread().getName());
-            acceptorExecute.shutdownGracefully();
+                        }
+                    })
+                    .bind(8080);
+        } catch (Exception e) {
+            log.error("出现异常！！！", e);
+        } finally {
+            acceptorExecutor.shutdownGracefully();
             workerExecutor.shutdownGracefully();
-        }));
+        }
     }
 }

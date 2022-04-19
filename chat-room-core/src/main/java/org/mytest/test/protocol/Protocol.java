@@ -2,6 +2,7 @@ package org.mytest.test.protocol;
 
 import io.netty.buffer.ByteBuf;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.message.Message;
 import org.mytest.test.protocol.version.Version;
 import org.mytest.test.serializer.SerializationProcessor;
@@ -21,6 +22,7 @@ import org.mytest.test.serializer.Serializer;
  * @date 2022/4/14 21:28
  **/
 @Data
+@Slf4j
 public abstract class Protocol {
     public static final byte[] MAGIC_NUMBER = {'g', 'e', 'm', 'o'};
     private Version version;
@@ -50,6 +52,9 @@ public abstract class Protocol {
     public abstract void alignPadding(ByteBuf buffer);
 
     public void writeToByteBuf(ByteBuf buffer) {
+        for (byte b : serializerMessage) {
+            log.info("================={}",b);
+        }
         // 魔数，4字节
         buffer.writeBytes(MAGIC_NUMBER);
         // 版本号，1字节
@@ -58,14 +63,12 @@ public abstract class Protocol {
         buffer.writeByte(serializer.getType());
         // 指令类型，1字节
         buffer.writeByte(message.getInstructionType());
-        // 序列化消息
-        SerializationProcessor serializationProcessor = serializer.getSerializationProcessor();
-        byte[] msgByte = serializationProcessor.serialize(message);
         // 正文长度，4字节
-        buffer.writeInt(msgByte.length);
+        buffer.writeInt(serializerMessage.length);
         // 对其填充，5字节
         alignPadding(buffer);
         // 消息正文
-        buffer.writeBytes(msgByte);
+        buffer.writeBytes(serializerMessage);
+
     }
 }

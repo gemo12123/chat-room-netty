@@ -1,5 +1,7 @@
 package org.mytest.test.message.impl;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.mytest.test.message.Message;
 import org.mytest.test.message.MessageType;
 
@@ -7,11 +9,16 @@ import org.mytest.test.message.MessageType;
  * @author gemo
  * @date 2022/4/17 17:26
  **/
+@Data
 public class LoginResponseMessage extends Message {
 
     private boolean success;
 
     private String reason;
+
+    public LoginResponseMessage(){
+
+    }
 
     public LoginResponseMessage(boolean success, String reason) {
         super(MessageType.LOGIN_RESPONSE);
@@ -24,6 +31,6 @@ public class LoginResponseMessage extends Message {
     }
 
     public static LoginResponseMessage loginFail(String reason) {
-        return new LoginResponseMessage(true, reason);
+        return new LoginResponseMessage(false, reason);
     }
 }

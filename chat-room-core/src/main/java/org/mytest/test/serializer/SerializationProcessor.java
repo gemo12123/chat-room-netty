@@ -1,6 +1,5 @@
 package org.mytest.test.serializer;
 
-import io.netty.buffer.ByteBuf;
 import org.mytest.test.message.Message;
 
 /**

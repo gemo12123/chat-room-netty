@@ -16,7 +16,6 @@ public class Protocol1 extends Protocol {
 
     public Protocol1(Serializer serializer, byte[] serializerMessage) {
         super(Version.VERSION_1, serializer, serializerMessage);
-
     }
 
     public Protocol1(Serializer serializer, Message message) {
