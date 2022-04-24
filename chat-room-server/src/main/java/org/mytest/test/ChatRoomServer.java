@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.codec.MessageCodec;
 import org.mytest.test.codec.ProtocolFrameDecoder;
 import org.mytest.test.handler.LoginHandler;
+import org.mytest.test.manager.ServerManager;
+import org.mytest.test.manager.ServerManagerImpl;
 
 /**
  * @author gemo
@@ -18,6 +20,8 @@ import org.mytest.test.handler.LoginHandler;
  **/
 @Slf4j
 public class ChatRoomServer {
+    public static final ServerManager SERVER_MANAGER = new ServerManagerImpl();
+
     public static final ChannelHandler LOGGING_HANDLER = new LoggingHandler();
     public static final ChannelHandler MESSAGE_CODEC = new MessageCodec();
     public static final ChannelHandler LOGIN_HANDLER = new LoginHandler();

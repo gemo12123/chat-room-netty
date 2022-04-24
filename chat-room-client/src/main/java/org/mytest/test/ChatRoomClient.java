@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.codec.MessageCodec;
 import org.mytest.test.codec.ProtocolFrameDecoder;
 import org.mytest.test.handler.LoginHandler;
+import org.mytest.test.manager.ClientManager;
+import org.mytest.test.manager.ClientManagerImpl;
 import org.mytest.test.message.impl.LoginRequestMessage;
 
 import java.util.Scanner;
@@ -23,6 +25,8 @@ import java.util.concurrent.TimeUnit;
  **/
 @Slf4j
 public class ChatRoomClient {
+    public static final ClientManager CLIENT_MANAGER=new ClientManagerImpl();
+
     public static final ThreadPoolExecutor THREAD_POOL = new ThreadPoolExecutor(5, 20, 5, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(200),
             Executors.defaultThreadFactory(),

@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.mytest.test.ChatRoomServer;
 import org.mytest.test.message.impl.LoginRequestMessage;
 import org.mytest.test.message.impl.LoginResponseMessage;
 import org.mytest.test.session.service.UserServiceFactory;
@@ -28,6 +29,9 @@ public class LoginHandler extends SimpleChannelInboundHandler<LoginRequestMessag
         boolean loginResult = UserServiceFactory.getUserService()
                 .login(username, password);
         log.info("用户{}的登陆结果{}！", username,loginResult ? "成功" : "失败");
+        if (loginResult) {
+            ChatRoomServer.SERVER_MANAGER.bind(username,ctx.channel());
+        }
         ctx.writeAndFlush(loginResult ? LoginResponseMessage.loginSuccess(username)
                 : LoginResponseMessage.loginFail("密码错误！"));
     }
