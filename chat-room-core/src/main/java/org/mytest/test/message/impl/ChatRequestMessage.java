@@ -1,6 +1,7 @@
 package org.mytest.test.message.impl;
 
 import lombok.Data;
+import org.mytest.test.manager.ClientManager;
 import org.mytest.test.message.Message;
 import org.mytest.test.message.MessageType;
 
@@ -19,5 +20,18 @@ public class ChatRequestMessage extends Message {
         this.from = from;
         this.to = to;
         this.content = content;
+    }
+
+    public static ChatRequestMessage of(ClientManager clientManager, String message) {
+        String[] command = message.split(" ", 2);
+        if (command.length < 2) {
+            System.err.println("非法参数！");
+            return null;
+        }
+        String username = clientManager.getCurrentUsername();
+        String to = command[0];
+        String content = command[1];
+        return new ChatRequestMessage(username, to, content);
+
     }
 }

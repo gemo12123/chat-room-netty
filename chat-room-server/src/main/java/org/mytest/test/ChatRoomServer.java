@@ -10,6 +10,7 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.codec.MessageCodec;
 import org.mytest.test.codec.ProtocolFrameDecoder;
+import org.mytest.test.handler.ChatRequestHandler;
 import org.mytest.test.handler.LoginHandler;
 import org.mytest.test.manager.ServerManager;
 import org.mytest.test.manager.ServerManagerImpl;
@@ -25,6 +26,7 @@ public class ChatRoomServer {
     public static final ChannelHandler LOGGING_HANDLER = new LoggingHandler();
     public static final ChannelHandler MESSAGE_CODEC = new MessageCodec();
     public static final ChannelHandler LOGIN_HANDLER = new LoginHandler();
+    public static final ChannelHandler CHAT_REQUEST_CHANNEL=new ChatRequestHandler();
 
     public static void main(String[] args) {
         NioEventLoopGroup acceptorExecutor = new NioEventLoopGroup();
@@ -40,10 +42,14 @@ public class ChatRoomServer {
                             ch.pipeline().addLast(LOGGING_HANDLER);
                             ch.pipeline().addLast(MESSAGE_CODEC);
                             ch.pipeline().addLast(workerExecutor, LOGIN_HANDLER);
-
+                            ch.pipeline().addLast(workerExecutor, CHAT_REQUEST_CHANNEL);
                         }
                     })
-                    .bind(8080);
+                    .bind(8080)
+            .sync()
+            .channel()
+            .closeFuture()
+            .sync();
         } catch (Exception e) {
             log.error("出现异常！！！", e);
         } finally {

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.ChatRoomClient;
 import org.mytest.test.message.impl.ChatRequestMessage;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -24,29 +25,15 @@ public class ClientRequest extends Thread {
     @Override
     public void run() {
         while (true) {
-            System.out.println("=============" + Thread.currentThread().getName() + "=====================");
-            System.out.println("send [username] [content]");
-            System.out.println("gsend [group name] [content]");
-            System.out.println("gcreate [group name] [m1,m2,m3...]");
-            System.out.println("gmembers [group name]");
-            System.out.println("gjoin [group name]");
-            System.out.println("gquit [group name]");
-            System.out.println("quit");
-            System.out.println("==================================");
+            printCommand();
             String command = scanner.nextLine();
-            String[] s = command.split(" ");
-            int length = s.length;
-            switch (s[0]) {
+            String[] content = command.split(" ",2);
+            switch (content[0]) {
                 case "send":
-                    if (length < 3) {
-                        System.err.println("非法参数！");
-                        continue;
-                    }
-                    String username = ChatRoomClient.cm.getUsername();
-                    String to = s[1];
-                    String content = s[2];
-                    ChatRequestMessage message = new ChatRequestMessage(username, to, content);
-                    ctx.writeAndFlush(message);
+                    Optional.ofNullable(ChatRequestMessage.of(ChatRoomClient.CLIENT_MANAGER,
+                            content[1]))
+                            .ifPresent(message -> ctx.writeAndFlush(message));
+                    continue;
                 case "quit":
                     ctx.channel().close();
                     return;
@@ -55,5 +42,17 @@ public class ClientRequest extends Thread {
                     continue;
             }
         }
+    }
+
+    private void printCommand() {
+        System.out.println("=============" + Thread.currentThread().getName() + "=====================");
+        System.out.println("send [username] [content]");
+        System.out.println("gsend [group name] [content]");
+        System.out.println("gcreate [group name] [m1,m2,m3...]");
+        System.out.println("gmembers [group name]");
+        System.out.println("gjoin [group name]");
+        System.out.println("gquit [group name]");
+        System.out.println("quit");
+        System.out.println("==================================");
     }
 }

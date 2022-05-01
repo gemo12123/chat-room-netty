@@ -24,6 +24,11 @@ public class ClientManagerImpl implements ClientManager{
     }
 
     @Override
+    public String getCurrentUsername() {
+        return username;
+    }
+
+    @Override
     public void exist() {
         synchronized (this) {
             this.username = null;

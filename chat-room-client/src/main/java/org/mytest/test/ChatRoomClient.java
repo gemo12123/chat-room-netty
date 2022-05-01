@@ -1,13 +1,18 @@
 package org.mytest.test;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.codec.MessageCodec;
 import org.mytest.test.codec.ProtocolFrameDecoder;
+import org.mytest.test.handler.ChatRequestHandler;
+import org.mytest.test.handler.ChatResponseHandler;
 import org.mytest.test.handler.LoginHandler;
 import org.mytest.test.manager.ClientManager;
 import org.mytest.test.manager.ClientManagerImpl;
@@ -31,13 +36,18 @@ public class ChatRoomClient {
             new LinkedBlockingQueue<>(200),
             Executors.defaultThreadFactory(),
             new ThreadPoolExecutor.CallerRunsPolicy());
+
+    public static final ProtocolFrameDecoder PROTOCOL_FRAME_DECODER = new ProtocolFrameDecoder();
     public static final ChannelHandler LOGGING_HANDLER = new LoggingHandler();
     public static final ChannelHandler MESSAGE_CODEC = new MessageCodec();
+    // 各种Handler
+    public static final LoginHandler LOGIN_HANDLER = new LoginHandler();
+    public static final ChatRequestHandler CHAT_REQUEST_HANDLER = new ChatRequestHandler();
+    public static final ChatResponseHandler CHAT_RESPONSE_HANDLER = new ChatResponseHandler();
 
     public static void main(String[] args) throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
         NioEventLoopGroup eventExecutors = new NioEventLoopGroup();
-        NioEventLoopGroup workerExecutor = new NioEventLoopGroup();
         try {
             new Bootstrap()
                     .group(eventExecutors)
@@ -45,11 +55,11 @@ public class ChatRoomClient {
                     .handler(new ChannelInitializer<NioSocketChannel>() {
                         @Override
                         protected void initChannel(NioSocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new ProtocolFrameDecoder());
-                            ch.pipeline().addLast(LOGGING_HANDLER);
+                            ch.pipeline().addLast(PROTOCOL_FRAME_DECODER);
                             ch.pipeline().addLast(MESSAGE_CODEC);
+                            ch.pipeline().addLast(LOGGING_HANDLER);
                             // 建立连接时的处理器
-                            ch.pipeline().addLast(workerExecutor, new ChannelInboundHandlerAdapter() {
+                            ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                                 @Override
                                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
                                     THREAD_POOL.execute(() -> {
@@ -62,7 +72,9 @@ public class ChatRoomClient {
                                     });
                                 }
                             });
-                            ch.pipeline().addLast(workerExecutor, new LoginHandler());
+                            ch.pipeline().addLast(LOGIN_HANDLER);
+                            ch.pipeline().addLast(CHAT_REQUEST_HANDLER);
+                            ch.pipeline().addLast(CHAT_RESPONSE_HANDLER);
                         }
                     })
                     .connect("127.0.0.1", 8080)
@@ -70,13 +82,11 @@ public class ChatRoomClient {
                     .channel()
                     .closeFuture()
                     .sync();
-            System.out.println("结束====================");
         } catch (Exception e) {
             log.error("出现异常！！！", e);
         } finally {
             log.info("{}线程执行，关闭了资源！", Thread.currentThread().getName());
             eventExecutors.shutdownGracefully();
-            workerExecutor.shutdownGracefully();
             THREAD_POOL.shutdown();
         }
     }

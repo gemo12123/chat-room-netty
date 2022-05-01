@@ -52,9 +52,6 @@ public abstract class Protocol {
     public abstract void alignPadding(ByteBuf buffer);
 
     public void writeToByteBuf(ByteBuf buffer) {
-        for (byte b : serializerMessage) {
-            log.info("================={}",b);
-        }
         // 魔数，4字节
         buffer.writeBytes(MAGIC_NUMBER);
         // 版本号，1字节

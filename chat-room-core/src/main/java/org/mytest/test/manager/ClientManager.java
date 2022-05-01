@@ -12,6 +12,12 @@ public interface ClientManager extends Manager {
     void register(String username);
 
     /**
+     * 获取当前用户
+     * @return
+     */
+    String getCurrentUsername();
+
+    /**
      * 用户退出
      */
     void exist();

@@ -1,11 +1,9 @@
 package org.mytest.test.manager;
 
 import cn.hutool.core.util.StrUtil;
-import com.sun.org.apache.xpath.internal.WhitespaceStrippingElementMatcher;
+import io.netty.channel.Channel;
 import org.mytest.test.session.GroupSession;
 import org.mytest.test.session.Session;
-
-import io.netty.channel.Channel;
 
 import java.util.*;
 import java.util.stream.Collectors;
