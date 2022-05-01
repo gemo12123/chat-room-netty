@@ -18,7 +18,7 @@ public class ChatResponseMessage extends Message {
     private String content;
 
     public ChatResponseMessage(String from, boolean success, String content) {
-        super(MessageType.CHAT_REQUEST);
+        super(MessageType.CHAT_RESPONSE);
         this.from = from;
         this.success = success;
         this.content = content;
