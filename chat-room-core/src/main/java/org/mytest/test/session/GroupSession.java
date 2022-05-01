@@ -2,10 +2,7 @@ package org.mytest.test.session;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author gemo
@@ -17,11 +14,11 @@ public class GroupSession {
 
     private String groupOwner;
 
-    private List<Session> members;
+    private Set<Session> members;
 
     public void join(Session session) {
-        List<Session> group = Optional.ofNullable(this.members)
-                .orElseGet(ArrayList::new);
+        Set<Session> group = Optional.ofNullable(this.members)
+                .orElseGet(HashSet::new);
         this.members = group;
         group.add(session);
     }

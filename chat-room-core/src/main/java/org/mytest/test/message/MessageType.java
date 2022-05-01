@@ -35,7 +35,19 @@ public enum MessageType {
      * 群聊退出请求响应
      */
     GROUP_QUIT_REQUEST((byte)10),
-    GROUP_QUIT_RESPONSE((byte)11);
+    GROUP_QUIT_RESPONSE((byte)11),
+    PERSON_QUIT_REQUEST((byte)12),
+    PERSON_QUIT_RESPONSE((byte)13),
+    /**
+     * 群组加入请求响应
+     */
+    GROUP_JOIN_REQUEST((byte)14),
+    GROUP_JOIN_RESPONSE((byte)15),
+    /**
+     * 获取群组
+     */
+    GROUP_GET_REQUEST((byte)16),
+    GROUP_GET_RESPONSE((byte)16);
 
     private byte type;
 

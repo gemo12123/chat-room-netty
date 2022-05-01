@@ -1,8 +1,12 @@
 package org.mytest.test.manager;
 
+import org.mytest.test.session.GroupSession;
 import org.mytest.test.session.Session;
 
 import io.netty.channel.Channel;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author gemo
@@ -48,7 +52,15 @@ public interface ServerManager extends Manager {
      * @param groupName
      * @param members
      */
-    void groupCreate(String groupOwner, String groupName, String... members);
+    boolean groupCreate(String groupOwner, String groupName, String... members);
+    /**
+     * 创建群组
+     *
+     * @param groupOwner
+     * @param groupName
+     * @param members
+     */
+    boolean groupCreate(String groupOwner, String groupName, Set<Session> members);
 
     /**
      * 群组添加成员channel
@@ -65,4 +77,9 @@ public interface ServerManager extends Manager {
      * @param username
      */
     void groupAdd(String groupName, String username);
+
+    /**
+     * 获取所有Group
+     */
+    List<GroupSession> getGroupList();
 }

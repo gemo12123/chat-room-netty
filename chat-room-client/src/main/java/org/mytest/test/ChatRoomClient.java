@@ -11,9 +11,7 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.codec.MessageCodec;
 import org.mytest.test.codec.ProtocolFrameDecoder;
-import org.mytest.test.handler.ChatRequestHandler;
-import org.mytest.test.handler.ChatResponseHandler;
-import org.mytest.test.handler.LoginHandler;
+import org.mytest.test.handler.*;
 import org.mytest.test.manager.ClientManager;
 import org.mytest.test.manager.ClientManagerImpl;
 import org.mytest.test.message.impl.LoginRequestMessage;
@@ -42,8 +40,10 @@ public class ChatRoomClient {
     public static final ChannelHandler MESSAGE_CODEC = new MessageCodec();
     // 各种Handler
     public static final LoginHandler LOGIN_HANDLER = new LoginHandler();
-    public static final ChatRequestHandler CHAT_REQUEST_HANDLER = new ChatRequestHandler();
-    public static final ChatResponseHandler CHAT_RESPONSE_HANDLER = new ChatResponseHandler();
+    public static final ChannelHandler CHAT_REQUEST_HANDLER = new ChatRequestHandler();
+    public static final ChannelHandler CHAT_RESPONSE_HANDLER = new ChatResponseHandler();
+    public static final ChannelHandler GROUP_RESPONSE_HANDLER = new GroupCreateResponseHandler();
+    public static final ChannelHandler GROUP_GET_HANDLER = new GroupGetResponseHandler();
 
     public static void main(String[] args) throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
@@ -75,6 +75,8 @@ public class ChatRoomClient {
                             ch.pipeline().addLast(LOGIN_HANDLER);
                             ch.pipeline().addLast(CHAT_REQUEST_HANDLER);
                             ch.pipeline().addLast(CHAT_RESPONSE_HANDLER);
+                            ch.pipeline().addLast(GROUP_RESPONSE_HANDLER);
+                            ch.pipeline().addLast(GROUP_GET_HANDLER);
                         }
                     })
                     .connect("127.0.0.1", 8080)

@@ -2,6 +2,7 @@ package org.mytest.test.manager;
 
 import cn.hutool.core.util.StrUtil;
 import io.netty.channel.Channel;
+import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.session.GroupSession;
 import org.mytest.test.session.Session;
 
@@ -12,10 +13,11 @@ import java.util.stream.Collectors;
  * @author gemo
  * @date 2022/4/24 20:17
  **/
+@Slf4j
 public class ServerManagerImpl implements ServerManager {
-    private List<Session> clients;
+    private List<Session> clients = new ArrayList<>();
 
-    private List<GroupSession> groups;
+    private List<GroupSession> groups = new ArrayList<>();
 
     @Override
     public void bind(String username, Channel channel) {
@@ -54,7 +56,7 @@ public class ServerManagerImpl implements ServerManager {
         }
         for (Session session : clients) {
             String sessionUsername = session.getUsername();
-            if (sessionUsername.equals(username)) {
+            if (sessionUsername.equals(username) && session.getChannel().isOpen()) {
                 return session;
             }
         }
@@ -71,13 +73,37 @@ public class ServerManagerImpl implements ServerManager {
     }
 
     @Override
-    public void groupCreate(String groupOwner, String groupName, String... members) {
+    public boolean groupCreate(String groupOwner, String groupName, String... members) {
+        if (StrUtil.isEmpty(groupOwner)
+                || StrUtil.isEmpty(groupName)
+                || members == null
+                || members.length < 3) {
+            log.warn("参数异常!groupOwner:{}, groupName:{}, members:{}!", groupOwner, groupName, members);
+            return false;
+        }
         GroupSession groupSession = new GroupSession();
         groupSession.setGroupName(groupName);
         groupSession.setGroupOwner(groupOwner);
         groupSession.setMembers(Arrays.stream(members)
                 .map(this::getSession)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toSet()));
+        return groups.add(groupSession);
+    }
+
+    @Override
+    public boolean groupCreate(String groupOwner, String groupName, Set<Session> members) {
+        if (StrUtil.isEmpty(groupOwner)
+                || StrUtil.isEmpty(groupName)
+                || members == null
+                || members.size() < 3) {
+            log.warn("参数异常!groupOwner:{}, groupName:{}, members:{}!", groupOwner, groupName, members);
+            return false;
+        }
+        GroupSession groupSession = new GroupSession();
+        groupSession.setGroupName(groupName);
+        groupSession.setGroupOwner(groupOwner);
+        groupSession.setMembers(members);
+        return groups.add(groupSession);
     }
 
     @Override
@@ -103,6 +129,11 @@ public class ServerManagerImpl implements ServerManager {
             return;
         }
         groupAdd(groupName, session);
+    }
+
+    @Override
+    public List<GroupSession> getGroupList() {
+        return groups;
     }
 
 

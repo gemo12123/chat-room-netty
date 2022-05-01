@@ -22,13 +22,12 @@ public class ChatRequestMessage extends Message {
         this.content = content;
     }
 
-    public static ChatRequestMessage of(ClientManager clientManager, String message) {
+    public static ChatRequestMessage of(String message,String username) {
         String[] command = message.split(" ", 2);
         if (command.length < 2) {
             System.err.println("非法参数！");
             return null;
         }
-        String username = clientManager.getCurrentUsername();
         String to = command[0];
         String content = command[1];
         return new ChatRequestMessage(username, to, content);

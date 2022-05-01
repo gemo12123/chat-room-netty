@@ -4,6 +4,8 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.ChatRoomClient;
 import org.mytest.test.message.impl.ChatRequestMessage;
+import org.mytest.test.message.impl.GroupCreateRequestMessage;
+import org.mytest.test.message.impl.GroupGetRequestMessage;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -27,12 +29,18 @@ public class ClientRequest extends Thread {
         while (true) {
             printCommand();
             String command = scanner.nextLine();
-            String[] content = command.split(" ",2);
+            String[] content = command.split(" ", 2);
             switch (content[0]) {
                 case "send":
-                    Optional.ofNullable(ChatRequestMessage.of(ChatRoomClient.CLIENT_MANAGER,
-                            content[1]))
+                    Optional.ofNullable(ChatRequestMessage.of(content[1], ChatRoomClient.CLIENT_MANAGER.getCurrentUsername()))
                             .ifPresent(message -> ctx.writeAndFlush(message));
+                    continue;
+                case "gcreate":
+                    Optional.ofNullable(GroupCreateRequestMessage.of(content[1],ChatRoomClient.CLIENT_MANAGER.getCurrentUsername()))
+                            .ifPresent(message -> ctx.writeAndFlush(message));
+                    continue;
+                case "gget":
+                    ctx.writeAndFlush(new GroupGetRequestMessage(ChatRoomClient.CLIENT_MANAGER.getCurrentUsername()));
                     continue;
                 case "quit":
                     ctx.channel().close();
@@ -52,6 +60,7 @@ public class ClientRequest extends Thread {
         System.out.println("gmembers [group name]");
         System.out.println("gjoin [group name]");
         System.out.println("gquit [group name]");
+        System.out.println("gget");
         System.out.println("quit");
         System.out.println("==================================");
     }
