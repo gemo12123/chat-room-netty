@@ -16,11 +16,11 @@ public interface ServerManager extends Manager {
 
     /**
      * 用户绑定channel
-     *
      * @param username
      * @param channel
+     * @return
      */
-    void bind(String username, Channel channel);
+    boolean bind(String username, Channel channel);
 
     /**
      * 用户解绑

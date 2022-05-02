@@ -15,16 +15,21 @@ import java.util.stream.Collectors;
  **/
 @Slf4j
 public class ServerManagerImpl implements ServerManager {
-    private List<Session> clients = new ArrayList<>();
+    private Set<Session> clients = new HashSet<>();
 
     private List<GroupSession> groups = new ArrayList<>();
 
     @Override
-    public void bind(String username, Channel channel) {
-        List<Session> clients = Optional.ofNullable(this.clients)
-                .orElseGet(ArrayList::new);
-        this.clients = clients;
-        clients.add(new Session(username, channel));
+    public boolean bind(String username, Channel channel) {
+        if (username == null) {
+            return false;
+        }
+        for (Session client : clients) {
+            if (Objects.equals(client.getUsername(), username)) {
+                return false;
+            }
+        }
+        return clients.add(new Session(username, channel));
     }
 
     @Override

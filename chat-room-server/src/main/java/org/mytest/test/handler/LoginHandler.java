@@ -28,11 +28,17 @@ public class LoginHandler extends SimpleChannelInboundHandler<LoginRequestMessag
         }
         boolean loginResult = UserServiceFactory.getUserService()
                 .login(username, password);
-        log.info("用户{}的登陆结果{}！", username,loginResult ? "成功" : "失败");
-        if (loginResult) {
-            ChatRoomServer.SERVER_MANAGER.bind(username,ctx.channel());
+        log.info("用户{}的登陆结果{}！", username, loginResult ? "成功" : "失败");
+        if (!loginResult) {
+            ctx.writeAndFlush(LoginResponseMessage.loginFail("密码错误！"));
         }
-        ctx.writeAndFlush(loginResult ? LoginResponseMessage.loginSuccess(username)
-                : LoginResponseMessage.loginFail("密码错误！"));
+        LoginResponseMessage message = null;
+        boolean result = ChatRoomServer.SERVER_MANAGER.bind(username, ctx.channel());
+        if (result) {
+            message = LoginResponseMessage.loginSuccess(username);
+        } else {
+            message = LoginResponseMessage.loginFail("用户已登陆！");
+        }
+        ctx.writeAndFlush(message);
     }
 }
