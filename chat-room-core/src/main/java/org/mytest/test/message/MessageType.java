@@ -47,7 +47,12 @@ public enum MessageType {
      * 获取群组
      */
     GROUP_GET_REQUEST((byte)16),
-    GROUP_GET_RESPONSE((byte)16);
+    GROUP_GET_RESPONSE((byte)17),
+    /**
+     * 获取群组成员
+     */
+    GROUP_MEMBER_REQUEST((byte)18),
+    GROUP_MEMBER_RESPONSE((byte)19);
 
     private byte type;
 

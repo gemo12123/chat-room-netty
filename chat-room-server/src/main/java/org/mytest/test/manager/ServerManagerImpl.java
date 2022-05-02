@@ -146,7 +146,7 @@ public class ServerManagerImpl implements ServerManager {
         GroupSession group = groups.stream()
                 .filter(item -> item.getGroupName().equals(groupName))
                 .findFirst()
-                .get();
+                .orElse(null);
         return group;
     }
 

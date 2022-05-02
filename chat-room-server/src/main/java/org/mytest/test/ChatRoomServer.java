@@ -30,6 +30,7 @@ public class ChatRoomServer {
     public static final ChannelHandler GROUP_CREATE_HANDLER=new GroupCreateRequestHandler();
     public static final ChannelHandler GROUP_GET_HANDLER=new GroupGetRequestHandler();
     public static final ChannelHandler GROUP_JOIN_HANDLER=new GroupJoinRequestHandler();
+    public static final ChannelHandler GROUP_MEMBER_HANDLER=new GroupMemberRequestHandler();
 
     public static void main(String[] args) {
         NioEventLoopGroup acceptorExecutor = new NioEventLoopGroup();
@@ -49,6 +50,7 @@ public class ChatRoomServer {
                             ch.pipeline().addLast(workerExecutor, GROUP_CREATE_HANDLER);
                             ch.pipeline().addLast(workerExecutor, GROUP_GET_HANDLER);
                             ch.pipeline().addLast(workerExecutor, GROUP_JOIN_HANDLER);
+                            ch.pipeline().addLast(workerExecutor, GROUP_MEMBER_HANDLER);
                         }
                     })
                     .bind(8080)
