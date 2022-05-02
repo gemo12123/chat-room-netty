@@ -37,6 +37,14 @@ public class ClientRequest extends Thread {
                     Optional.ofNullable(ChatRequestMessage.of(content[1], ChatRoomClient.CLIENT_MANAGER.getCurrentUsername()))
                             .ifPresent(message -> ctx.writeAndFlush(message));
                     continue;
+                case "gsend":
+                    if (content.length != 2) {
+                        System.err.println("参数异常！");
+                        continue;
+                    }
+                    Optional.ofNullable(GroupChatRequestMessage.of(content[1], ChatRoomClient.CLIENT_MANAGER.getCurrentUsername()))
+                            .ifPresent(message -> ctx.writeAndFlush(message));
+                    continue;
                 case "gcreate":
                     if (content.length != 2) {
                         System.err.println("参数异常！");

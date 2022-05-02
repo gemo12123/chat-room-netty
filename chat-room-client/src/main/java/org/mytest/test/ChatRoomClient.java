@@ -47,6 +47,8 @@ public class ChatRoomClient {
     public static final ChannelHandler GROUP_JOIN_HANDLER = new GroupJoinResponseHandler();
     public static final ChannelHandler GROUP_MEMBER_HANDLER = new GroupMemberResponseHandler();
     public static final ChannelHandler GROUP_QUIT_HANDLER = new GroupQuitResponseHandler();
+    public static final ChannelHandler GROUP_CHAT_REQUEST_HANDLER = new GroupChatRequestHandler();
+    public static final ChannelHandler GROUP_CHAT_RESPONSE_HANDLER = new GroupChatResponseHandler();
 
     public static void main(String[] args) throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
@@ -83,6 +85,8 @@ public class ChatRoomClient {
                             ch.pipeline().addLast(GROUP_JOIN_HANDLER);
                             ch.pipeline().addLast(GROUP_MEMBER_HANDLER);
                             ch.pipeline().addLast(GROUP_QUIT_HANDLER);
+                            ch.pipeline().addLast(GROUP_CHAT_REQUEST_HANDLER);
+                            ch.pipeline().addLast(GROUP_CHAT_RESPONSE_HANDLER);
                         }
                     })
                     .connect("127.0.0.1", 8080)
