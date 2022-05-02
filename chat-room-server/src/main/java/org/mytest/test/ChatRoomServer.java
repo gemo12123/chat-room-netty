@@ -7,6 +7,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.codec.MessageCodec;
 import org.mytest.test.codec.ProtocolFrameDecoder;
@@ -24,6 +25,8 @@ public class ChatRoomServer {
 
     public static final ChannelHandler LOGGING_HANDLER = new LoggingHandler();
     public static final ChannelHandler MESSAGE_CODEC = new MessageCodec();
+    // 心跳handler
+    public static final ChannelHandler HEAT_BEAT_HADNLER = new HeatBeatHandler();
     // 各种handler
     public static final ChannelHandler LOGIN_HANDLER = new LoginHandler();
     public static final ChannelHandler CHAT_REQUEST_HANDLER = new ChatRequestHandler();
@@ -45,8 +48,12 @@ public class ChatRoomServer {
                         @Override
                         protected void initChannel(NioSocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new ProtocolFrameDecoder());
-                            ch.pipeline().addLast(LOGGING_HANDLER);
+//                            ch.pipeline().addLast(LOGGING_HANDLER);
                             ch.pipeline().addLast(MESSAGE_CODEC);
+                            // 5s没有读取消息，则触发IdleStateEvent#READER_IDLE事件
+                            ch.pipeline().addLast(workerExecutor, new IdleStateHandler(5,0,0));
+                            ch.pipeline().addLast(workerExecutor, HEAT_BEAT_HADNLER);
+                            // 业务handler
                             ch.pipeline().addLast(workerExecutor, LOGIN_HANDLER);
                             ch.pipeline().addLast(workerExecutor, CHAT_REQUEST_HANDLER);
                             ch.pipeline().addLast(workerExecutor, GROUP_CREATE_HANDLER);

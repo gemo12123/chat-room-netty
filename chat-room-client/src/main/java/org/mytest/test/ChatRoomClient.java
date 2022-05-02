@@ -1,5 +1,6 @@
 package org.mytest.test;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -8,6 +9,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.codec.MessageCodec;
 import org.mytest.test.codec.ProtocolFrameDecoder;
@@ -38,8 +40,10 @@ public class ChatRoomClient {
     public static final ProtocolFrameDecoder PROTOCOL_FRAME_DECODER = new ProtocolFrameDecoder();
     public static final ChannelHandler LOGGING_HANDLER = new LoggingHandler();
     public static final ChannelHandler MESSAGE_CODEC = new MessageCodec();
+    // 心跳handler
+    public static final ChannelHandler HEAT_BEAT_HANDLER = new HeatBeatHandler();
     // 各种Handler
-    public static final LoginHandler LOGIN_HANDLER = new LoginHandler();
+    public static final ChannelHandler LOGIN_HANDLER = new LoginHandler();
     public static final ChannelHandler CHAT_REQUEST_HANDLER = new ChatRequestHandler();
     public static final ChannelHandler CHAT_RESPONSE_HANDLER = new ChatResponseHandler();
     public static final ChannelHandler GROUP_RESPONSE_HANDLER = new GroupCreateResponseHandler();
@@ -62,9 +66,17 @@ public class ChatRoomClient {
                         protected void initChannel(NioSocketChannel ch) throws Exception {
                             ch.pipeline().addLast(PROTOCOL_FRAME_DECODER);
                             ch.pipeline().addLast(MESSAGE_CODEC);
-                            ch.pipeline().addLast(LOGGING_HANDLER);
+//                            ch.pipeline().addLast(LOGGING_HANDLER);
+                            // 心跳handler
+                            ch.pipeline().addLast(new IdleStateHandler(0,2,0));
+                            ch.pipeline().addLast(HEAT_BEAT_HANDLER);
                             // 建立连接时的处理器
                             ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                                /**
+                                 * 连接建立时
+                                 * @param ctx
+                                 * @throws Exception
+                                 */
                                 @Override
                                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
                                     THREAD_POOL.execute(() -> {
@@ -75,6 +87,33 @@ public class ChatRoomClient {
                                         LoginRequestMessage loginRequestMessage = new LoginRequestMessage(username, password);
                                         ctx.writeAndFlush(loginRequestMessage);
                                     });
+                                }
+
+                                /**
+                                 * 连接断开时
+                                 * @param ctx
+                                 * @throws Exception
+                                 */
+                                @Override
+                                public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                                    log.info("连接已经断开!");
+                                    if (!eventExecutors.isShutdown()) {
+                                        eventExecutors.shutdownGracefully();
+                                    }
+                                    if (!THREAD_POOL.isShutdown()) {
+                                        THREAD_POOL.shutdownNow();
+                                    }
+                                }
+
+                                /**
+                                 * 连接异常时
+                                 * @param ctx
+                                 * @param cause
+                                 * @throws Exception
+                                 */
+                                @Override
+                                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                                    log.error("Client link is error!", cause);
                                 }
                             });
                             ch.pipeline().addLast(LOGIN_HANDLER);
@@ -98,8 +137,13 @@ public class ChatRoomClient {
             log.error("出现异常！！！", e);
         } finally {
             log.info("{}线程执行，关闭了资源！", Thread.currentThread().getName());
-            eventExecutors.shutdownGracefully();
-            THREAD_POOL.shutdown();
+            if (!eventExecutors.isShutdown()) {
+                eventExecutors.shutdownGracefully();
+            }
+            // TODO: 2022/5/2 线程池无法关闭,clientRequest线程未关闭！
+            if (!THREAD_POOL.isShutdown()) {
+                THREAD_POOL.shutdownNow();
+            }
         }
     }
 }
