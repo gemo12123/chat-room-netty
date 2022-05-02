@@ -50,8 +50,16 @@ public class ClientRequest extends Thread {
                         System.err.println("参数异常！");
                         continue;
                     }
-                    GroupJoinRequestMessage message = new GroupJoinRequestMessage(ChatRoomClient.CLIENT_MANAGER.getCurrentUsername(), content[1]);
-                    ctx.writeAndFlush(message);
+                    GroupJoinRequestMessage joinMessage = new GroupJoinRequestMessage(ChatRoomClient.CLIENT_MANAGER.getCurrentUsername(), content[1]);
+                    ctx.writeAndFlush(joinMessage);
+                    continue;
+                case "gquit":
+                    if (content.length != 2) {
+                        System.err.println("参数异常！");
+                        continue;
+                    }
+                    GroupQuitRequestMessage quitMessage = new GroupQuitRequestMessage(ChatRoomClient.CLIENT_MANAGER.getCurrentUsername(), content[1]);
+                    ctx.writeAndFlush(quitMessage);
                     continue;
                 case "gmembers":
                     if (content.length != 2) {
