@@ -107,7 +107,7 @@ public class ServerManagerImpl implements ServerManager {
     }
 
     @Override
-    public void groupAdd(String groupName, Session session) {
+    public boolean groupAdd(String groupName, Session session) {
         List<GroupSession> groups = Optional.ofNullable(this.groups)
                 .orElseGet(ArrayList::new);
         this.groups = groups;
@@ -116,10 +116,10 @@ public class ServerManagerImpl implements ServerManager {
             if (!groupNameTemp.equals(groupName)) {
                 continue;
             }
-            group.join(session);
-            return;
+            return group.join(session);
         }
-        groupCreate(session.getUsername(), groupName);
+//        groupCreate(session.getUsername(), groupName);
+        return false;
     }
 
     @Override
@@ -134,6 +134,15 @@ public class ServerManagerImpl implements ServerManager {
     @Override
     public List<GroupSession> getGroupList() {
         return groups;
+    }
+
+    @Override
+    public GroupSession getGroup(String groupName) {
+        GroupSession group = groups.stream()
+                .filter(item -> item.getGroupName().equals(groupName))
+                .findFirst()
+                .get();
+        return group;
     }
 
 

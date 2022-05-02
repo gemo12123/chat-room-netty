@@ -6,6 +6,7 @@ import org.mytest.test.ChatRoomClient;
 import org.mytest.test.message.impl.ChatRequestMessage;
 import org.mytest.test.message.impl.GroupCreateRequestMessage;
 import org.mytest.test.message.impl.GroupGetRequestMessage;
+import org.mytest.test.message.impl.GroupJoinRequestMessage;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -32,12 +33,28 @@ public class ClientRequest extends Thread {
             String[] content = command.split(" ", 2);
             switch (content[0]) {
                 case "send":
+                    if (content.length!=2) {
+                        System.err.println("参数异常！");
+                        continue;
+                    }
                     Optional.ofNullable(ChatRequestMessage.of(content[1], ChatRoomClient.CLIENT_MANAGER.getCurrentUsername()))
                             .ifPresent(message -> ctx.writeAndFlush(message));
                     continue;
                 case "gcreate":
+                    if (content.length!=2) {
+                        System.err.println("参数异常！");
+                        continue;
+                    }
                     Optional.ofNullable(GroupCreateRequestMessage.of(content[1],ChatRoomClient.CLIENT_MANAGER.getCurrentUsername()))
                             .ifPresent(message -> ctx.writeAndFlush(message));
+                    continue;
+                case "gjoin":
+                    if (content.length!=2) {
+                        System.err.println("参数异常！");
+                        continue;
+                    }
+                    GroupJoinRequestMessage message = new GroupJoinRequestMessage(ChatRoomClient.CLIENT_MANAGER.getCurrentUsername(), content[1]);
+                    ctx.writeAndFlush(message);
                     continue;
                 case "gget":
                     ctx.writeAndFlush(new GroupGetRequestMessage(ChatRoomClient.CLIENT_MANAGER.getCurrentUsername()));

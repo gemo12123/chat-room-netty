@@ -10,10 +10,7 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.mytest.test.codec.MessageCodec;
 import org.mytest.test.codec.ProtocolFrameDecoder;
-import org.mytest.test.handler.ChatRequestHandler;
-import org.mytest.test.handler.GroupCreateRequestHandler;
-import org.mytest.test.handler.GroupGetRequestHandler;
-import org.mytest.test.handler.LoginHandler;
+import org.mytest.test.handler.*;
 import org.mytest.test.manager.ServerManager;
 import org.mytest.test.manager.ServerManagerImpl;
 
@@ -32,6 +29,7 @@ public class ChatRoomServer {
     public static final ChannelHandler CHAT_REQUEST_HANDLER=new ChatRequestHandler();
     public static final ChannelHandler GROUP_CREATE_HANDLER=new GroupCreateRequestHandler();
     public static final ChannelHandler GROUP_GET_HANDLER=new GroupGetRequestHandler();
+    public static final ChannelHandler GROUP_JOIN_HANDLER=new GroupJoinRequestHandler();
 
     public static void main(String[] args) {
         NioEventLoopGroup acceptorExecutor = new NioEventLoopGroup();
@@ -50,6 +48,7 @@ public class ChatRoomServer {
                             ch.pipeline().addLast(workerExecutor, CHAT_REQUEST_HANDLER);
                             ch.pipeline().addLast(workerExecutor, GROUP_CREATE_HANDLER);
                             ch.pipeline().addLast(workerExecutor, GROUP_GET_HANDLER);
+                            ch.pipeline().addLast(workerExecutor, GROUP_JOIN_HANDLER);
                         }
                     })
                     .bind(8080)

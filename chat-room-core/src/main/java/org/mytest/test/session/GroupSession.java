@@ -16,11 +16,11 @@ public class GroupSession {
 
     private Set<Session> members;
 
-    public void join(Session session) {
+    public boolean join(Session session) {
         Set<Session> group = Optional.ofNullable(this.members)
                 .orElseGet(HashSet::new);
         this.members = group;
-        group.add(session);
+        return group.add(session);
     }
 
     public void exist(String username) {

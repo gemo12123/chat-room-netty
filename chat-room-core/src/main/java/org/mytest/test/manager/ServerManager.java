@@ -68,7 +68,7 @@ public interface ServerManager extends Manager {
      * @param groupName
      * @param session
      */
-    void groupAdd(String groupName, Session session);
+    boolean groupAdd(String groupName, Session session);
 
     /**
      * 群组绑定channel
@@ -82,4 +82,6 @@ public interface ServerManager extends Manager {
      * 获取所有Group
      */
     List<GroupSession> getGroupList();
+
+    GroupSession getGroup(String groupName);
 }
