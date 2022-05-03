@@ -14,7 +14,7 @@ import org.mytest.test.message.impl.PingMessage;
  **/
 @Slf4j
 @ChannelHandler.Sharable
-public class HeatBeatHandler extends ChannelDuplexHandler {
+public class HeartBeatHandler extends ChannelDuplexHandler {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {

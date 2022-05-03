@@ -1,6 +1,5 @@
 package org.mytest.test;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -41,7 +40,7 @@ public class ChatRoomClient {
     public static final ChannelHandler LOGGING_HANDLER = new LoggingHandler();
     public static final ChannelHandler MESSAGE_CODEC = new MessageCodec();
     // 心跳handler
-    public static final ChannelHandler HEAT_BEAT_HANDLER = new HeatBeatHandler();
+    public static final ChannelHandler HEAT_BEAT_HANDLER = new HeartBeatHandler();
     // 各种Handler
     public static final ChannelHandler LOGIN_HANDLER = new LoginHandler();
     public static final ChannelHandler CHAT_REQUEST_HANDLER = new ChatRequestHandler();

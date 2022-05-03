@@ -12,7 +12,7 @@ import org.mytest.test.message.impl.PingMessage;
  * @date 2022/5/2 21:30
  **/
 @Slf4j
-public class HeatBeatHandler extends ChannelDuplexHandler {
+public class HeartBeatHandler extends ChannelDuplexHandler {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {

@@ -26,7 +26,7 @@ public class ChatRoomServer {
     public static final ChannelHandler LOGGING_HANDLER = new LoggingHandler();
     public static final ChannelHandler MESSAGE_CODEC = new MessageCodec();
     // 心跳handler
-    public static final ChannelHandler HEAT_BEAT_HADNLER = new HeatBeatHandler();
+    public static final ChannelHandler HEAT_BEAT_HADNLER = new HeartBeatHandler();
     // 各种handler
     public static final ChannelHandler LOGIN_HANDLER = new LoginHandler();
     public static final ChannelHandler CHAT_REQUEST_HANDLER = new ChatRequestHandler();
