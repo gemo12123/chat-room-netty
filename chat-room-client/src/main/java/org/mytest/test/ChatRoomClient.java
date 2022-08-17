@@ -1,10 +1,8 @@
 package org.mytest.test;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LoggingHandler;
@@ -58,6 +56,7 @@ public class ChatRoomClient {
         NioEventLoopGroup eventExecutors = new NioEventLoopGroup();
         try {
             new Bootstrap()
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000)
                     .group(eventExecutors)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<NioSocketChannel>() {
